@@ -44,17 +44,18 @@ export default function FinalSection() {
     fireConfetti();
   };
 
+  const buttonsRef = useRef<HTMLDivElement>(null);
+
   const moveNoButton = useCallback(() => {
-    if (!containerRef.current) return;
-    const container = containerRef.current.getBoundingClientRect();
-    const btnWidth = 120;
-    const btnHeight = 48;
-    // Keep button within visible bounds with padding
-    const pad = 20;
-    const maxX = (container.width - btnWidth) / 2 - pad;
-    const maxY = (container.height - btnHeight) / 2 - pad;
-    const safeMaxX = Math.max(maxX, 40);
-    const safeMaxY = Math.max(maxY, 40);
+    if (!buttonsRef.current) return;
+    const box = buttonsRef.current.getBoundingClientRect();
+    const btnWidth = 130;
+    const btnHeight = 50;
+    // Keep within the buttons container
+    const maxX = (box.width - btnWidth) / 2;
+    const maxY = (box.height - btnHeight) / 2;
+    const safeMaxX = Math.max(maxX, 20);
+    const safeMaxY = Math.max(maxY, 20);
     const newX = (Math.random() * 2 - 1) * safeMaxX;
     const newY = (Math.random() * 2 - 1) * safeMaxY;
     setNoPos({ x: newX, y: newY });
@@ -116,11 +117,14 @@ export default function FinalSection() {
               Will you be my girlfriend?
             </motion.h2>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 relative w-full max-w-xs sm:max-w-none">
+            <div
+              ref={buttonsRef}
+              className="relative flex items-center justify-center w-[90vw] max-w-lg h-[200px] sm:h-[250px]"
+            >
               {/* YES Button */}
               <motion.button
                 onClick={handleYes}
-                className="px-10 sm:px-12 py-3 sm:py-4 text-lg sm:text-xl md:text-2xl font-bold text-white rounded-full shadow-xl cursor-pointer"
+                className="z-10 px-10 sm:px-12 py-3 sm:py-4 text-lg sm:text-xl md:text-2xl font-bold text-white rounded-full shadow-xl cursor-pointer"
                 style={{
                   backgroundColor: "#FFB3C6",
                   fontFamily: "'Fredoka', sans-serif",
@@ -149,12 +153,14 @@ export default function FinalSection() {
                 ref={noBtnRef}
                 onMouseEnter={handleNoInteraction}
                 onTouchStart={handleNoInteraction}
-                className="px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-semibold rounded-full shadow-md cursor-pointer"
+                className="absolute px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-semibold rounded-full shadow-md cursor-pointer"
                 style={{
                   backgroundColor: "#e0d4d8",
                   color: "#8a7a80",
                   fontFamily: "'Fredoka', sans-serif",
-                  position: noMoved ? "absolute" : "relative",
+                  bottom: noMoved ? undefined : "20px",
+                  left: noMoved ? undefined : "50%",
+                  transform: noMoved ? undefined : "translateX(-50%)",
                 }}
                 animate={{
                   x: noPos.x,
